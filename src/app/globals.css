@@ -1,3 +1,6 @@
+/* src/app/globals.css — NOSTIMO
+   NO @import url() here — fonts loaded via next/font in layout.tsx
+*/
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -46,6 +49,12 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --color-brand-amber: var(--brand-amber);
+  --color-brand-rose:  var(--brand-rose);
+  --color-brand-stone: var(--brand-stone);
+  --color-brand-cream: var(--brand-cream);
+  --font-playfair: var(--font-playfair);
+  --font-jakarta:  var(--font-jakarta);
 }
 
 :root {
@@ -81,6 +90,10 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --brand-amber: #f59e0b;
+  --brand-rose:  #f43f5e;
+  --brand-stone: #0c0a09;
+  --brand-cream: #FDFCFA;
 }
 
 .dark {
@@ -118,13 +131,91 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+  html { @apply font-sans; scroll-behavior: smooth; }
+  ::selection { background-color: #fde68a; color: #1c1917; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: oklch(0.75 0 0); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: oklch(0.55 0 0); }
 }
+
+@layer utilities {
+  .font-playfair { font-family: var(--font-playfair, Georgia, serif); }
+  .font-jakarta  { font-family: var(--font-jakarta, system-ui, sans-serif); }
+
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-dark {
+    background: rgba(12, 10, 9, 0.80);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .hover-lift {
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+  }
+  .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 12px 32px -8px rgba(0,0,0,0.18); }
+
+  .input-nostimo {
+    @apply w-full rounded-xl px-4 py-3 text-sm transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    background: #1c1917; border: 1px solid #44403c; color: #f5f5f4; outline: none;
+  }
+  .input-nostimo::placeholder { color: #78716c; }
+  .input-nostimo:focus { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
+  .input-nostimo[aria-invalid="true"] { border-color: #f43f5e; box-shadow: 0 0 0 3px rgba(244,63,94,0.12); }
+
+  .shimmer {
+    background: linear-gradient(90deg, #f5f5f4 25%, #e7e5e4 50%, #f5f5f4 75%);
+    background-size: 200% 100%;
+    animation: shimmerAnim 1.6s ease-in-out infinite;
+  }
+  .shimmer-dark {
+    background: linear-gradient(90deg, #292524 25%, #3d3836 50%, #292524 75%);
+    background-size: 200% 100%;
+    animation: shimmerAnim 1.6s ease-in-out infinite;
+  }
+
+  .btn-amber {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-bold text-sm
+           transition-all duration-150 active:scale-95;
+    background: #f59e0b; color: #1c1917; padding: 0.75rem 1.5rem;
+  }
+  .btn-amber:hover  { background: #fbbf24; }
+  .btn-amber:active { background: #d97706; }
+  .btn-amber:disabled { background: #44403c; color: #78716c; cursor: not-allowed; transform: none; }
+
+  .btn-ghost-dark {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-medium text-sm
+           transition-all duration-150;
+    border: 1px solid #44403c; color: #a8a29e; padding: 0.75rem 1.5rem;
+  }
+  .btn-ghost-dark:hover { border-color: #78716c; color: #e7e5e4; background: rgba(255,255,255,0.04); }
+
+  .page-storefront { background-color: #FDFCFA; min-height: 100vh; }
+  .page-admin      { background-color: #0c0a09; min-height: 100vh; }
+
+  .animate-fade-in-up     { animation: fadeInUp      0.5s  ease both; }
+  .animate-scale-in       { animation: scaleIn       0.3s  ease both; }
+  .animate-slide-in-right { animation: slideInRight  0.35s ease both; }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms;   }
+  .stagger-children > *:nth-child(2) { animation-delay: 80ms;  }
+  .stagger-children > *:nth-child(3) { animation-delay: 160ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 240ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 320ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 400ms; }
+}
+
+@keyframes shimmerAnim    { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes fadeInUp       { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn        { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideInRight   { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
