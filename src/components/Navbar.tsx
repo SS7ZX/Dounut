@@ -12,8 +12,8 @@ import { useAuth }      from '@/hooks/useAuth';
 
 const NAV_LINKS = [
   { label: 'Menu',  href: '/menu'  },
-  { label: 'Promo', href: '/#promo'},
-  { label: 'About', href: '/#about'},
+  { label: 'Promo', href: '/promo' },
+  { label: 'About', href: '/about' },
 ] as const;
 
 export function Navbar() {
@@ -62,15 +62,15 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-2 group">
             <span className="
               text-xl font-playfair font-black italic
-              text-stone-50
-              group-hover:text-amber-400 transition-colors duration-200
+              text-amber-400
+              group-hover:text-white transition-colors duration-200
             ">
               Nostimo
             </span>
             <span className="
-              hidden sm:block text-[10px] text-stone-600
+              hidden sm:block text-[10px] text-white
               font-semibold tracking-widest uppercase
-              group-hover:text-stone-500 transition-colors
+              group-hover:text-white transition-colors
             ">
               Artisan
             </span>
@@ -85,8 +85,8 @@ export function Navbar() {
                   className={`
                     px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-150
                     ${pathname === href
-                      ? 'text-amber-400 bg-amber-500/10'
-                      : 'text-stone-400 hover:text-stone-200 hover:bg-stone-800/50'}
+                      ? 'text-white bg-amber-500/20'
+                      : 'text-amber-400 hover:text-white hover:bg-amber-500/10'}
                   `}
                 >
                   {label}
@@ -103,8 +103,8 @@ export function Navbar() {
               href="/cart"
               aria-label={`Keranjang, ${totalItems} item`}
               className="
-                relative p-2.5 rounded-xl text-stone-400 hover:text-stone-200
-                hover:bg-stone-800/60 transition-all duration-150
+                relative p-2.5 rounded-xl text-amber-400 hover:text-white
+                hover:bg-amber-500/10 transition-all duration-150
               "
             >
               <ShoppingBag size={20} />
@@ -135,7 +135,7 @@ export function Navbar() {
                       onClick={() => setProfileOpen((o) => !o)}
                       className="
                         flex items-center gap-2 px-3 py-2 rounded-xl
-                        text-stone-400 hover:text-stone-200 hover:bg-stone-800/60
+                        text-amber-400 hover:text-white hover:bg-amber-500/10
                         transition-all duration-150 text-sm
                       "
                     >
@@ -192,14 +192,14 @@ export function Navbar() {
                   /* Not logged in */
                   <div className="hidden md:flex items-center gap-2">
                     <Link href="/login"
-                      className="px-4 py-2 text-sm font-medium text-stone-400 hover:text-stone-200 transition-colors"
+                      className="px-4 py-2 text-sm font-medium text-amber-400 hover:text-white transition-colors"
                     >
                       Masuk
                     </Link>
                     <Link href="/register"
                       className="
                         px-4 py-2 rounded-xl text-sm font-bold
-                        bg-amber-500 hover:bg-amber-400 active:bg-amber-600
+                        bg-amber-400 hover:bg-white active:bg-amber-300
                         text-stone-950 transition-all duration-150
                       "
                     >
@@ -215,8 +215,8 @@ export function Navbar() {
               onClick={() => setMobileOpen((o) => !o)}
               aria-label="Toggle menu"
               className="
-                md:hidden p-2.5 rounded-xl text-stone-400 hover:text-stone-200
-                hover:bg-stone-800/60 transition-all
+                md:hidden p-2.5 rounded-xl text-amber-400 hover:text-white
+                hover:bg-amber-500/10 transition-all
               "
             >
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
@@ -243,7 +243,7 @@ export function Navbar() {
             <div className="px-4 py-4 flex flex-col gap-1">
               {NAV_LINKS.map(({ label, href }) => (
                 <Link key={label} href={href}
-                  className="px-4 py-3 rounded-xl text-stone-300 hover:bg-stone-800 hover:text-stone-100 font-medium text-sm transition-colors"
+                  className="px-4 py-3 rounded-xl text-amber-400 hover:bg-amber-500/10 hover:text-white font-medium text-sm transition-colors"
                 >
                   {label}
                 </Link>
@@ -253,7 +253,7 @@ export function Navbar() {
                 {isLoggedIn ? (
                   <>
                     <Link href="/orders"
-                      className="flex items-center gap-2 px-4 py-3 rounded-xl text-stone-300 hover:bg-stone-800 text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 px-4 py-3 rounded-xl text-amber-400 hover:bg-amber-500/10 text-sm font-medium transition-colors"
                     >
                       <Package size={16} />
                       Riwayat Pesanan
@@ -268,12 +268,12 @@ export function Navbar() {
                 ) : (
                   <>
                     <Link href="/login"
-                      className="px-4 py-3 rounded-xl text-stone-300 hover:bg-stone-800 text-sm font-medium text-center transition-colors"
+                      className="px-4 py-3 rounded-xl text-amber-400 hover:bg-amber-500/10 text-sm font-medium text-center transition-colors"
                     >
                       Masuk
                     </Link>
                     <Link href="/register"
-                      className="px-4 py-3 rounded-xl bg-amber-500 text-stone-950 text-sm font-bold text-center transition-colors"
+                      className="px-4 py-3 rounded-xl bg-amber-400 text-stone-950 text-sm font-bold text-center transition-colors hover:bg-white"
                     >
                       Daftar Sekarang
                     </Link>

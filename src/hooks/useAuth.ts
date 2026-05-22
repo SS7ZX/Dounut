@@ -65,6 +65,9 @@ export function useAuth() {
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setProfile(null);
+    if (typeof window !== 'undefined') {
+      document.cookie = 'admin_token=; path=/; max-age=0; sameSite=strict';
+    }
   }, []);
 
   return {

@@ -10,6 +10,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Navbar }      from '@/components/Navbar';
 import { HeroPromo }   from '@/components/HeroPromo';
+import { PromoBanner } from '@/components/PromoBanner';
 import { ProductGrid } from '@/components/ProductGrid';
 
 // --------------------------------------------------------------------------
@@ -282,6 +283,7 @@ export default function Home() {
 
         <main className="w-full flex flex-col relative">
           <HeroPromo />
+          <PromoBanner />
           <ProductGrid />
         </main>
 
