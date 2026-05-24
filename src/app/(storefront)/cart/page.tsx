@@ -39,7 +39,7 @@ function CartItem({ item }: { item: { id: number; name: string; price: number; q
       className="flex items-center gap-3.5 py-4 border-b border-stone-100 last:border-0"
     >
       {/* Image */}
-      <Link href="/menu" className="flex-shrink-0">
+      <Link href="/menu" className="shrink-0">
         <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-stone-100">
           <Image
             src={item.image}
@@ -246,7 +246,7 @@ export default function CartPage() {
                 {/* Auth state message */}
                 {!authLoading && !isLoggedIn && (
                   <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 mb-4">
-                    <Lock size={14} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                    <Lock size={14} className="text-amber-600 shrink-0 mt-0.5" />
                     <p className="text-xs text-amber-700 leading-relaxed">
                       Kamu perlu <strong>login</strong> sebelum checkout.
                       Akun kamu dibutuhkan untuk melacak pesanan.
