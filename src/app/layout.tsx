@@ -5,7 +5,8 @@ import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 
 // 1. TAMBAHKAN IMPORT INI DI BAWAH globals.css
-import AuthProvider from '@/components/AuthProvider'; 
+import AuthProvider from '@/components/AuthProvider';
+import { CartProvider } from '@/context/CartContext';
 
 // Playfair Display — untuk semua heading artisan italic
 const playfair = Playfair_Display({
@@ -58,9 +59,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>
-        {/* 2. BUNGKUS CHILDREN DENGAN AUTHPROVIDER */}
         <AuthProvider>
-          {children}
+          <CartProvider>
+            {children}
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

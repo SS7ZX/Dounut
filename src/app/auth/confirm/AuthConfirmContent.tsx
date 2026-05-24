@@ -67,6 +67,10 @@ export default function AuthConfirmContent() {
         return;
       }
 
+      if (typeof window !== 'undefined') {
+        document.cookie = 'customer_token=1; path=/; max-age=3600; sameSite=strict';
+      }
+
       // Success — redirect
       router.replace(next);
     }

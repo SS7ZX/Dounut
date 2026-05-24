@@ -24,7 +24,8 @@ function GoogleIcon() {
 export default function LoginContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
-  const redirect     = searchParams.get('redirect') ?? '/dashboard';
+  const callbackUrl  = searchParams.get('callbackUrl');
+  const redirect     = searchParams.get('redirect') ?? callbackUrl ?? '/dashboard';
   const errorParam   = searchParams.get('error');
 
   const [email, setEmail]         = useState('');
@@ -74,6 +75,10 @@ export default function LoginContent() {
       setError('Email atau password salah.');
       setLoading(false);
       return;
+    }
+
+    if (typeof window !== 'undefined') {
+      document.cookie = 'customer_token=1; path=/; max-age=3600; sameSite=strict';
     }
 
     router.push(redirect);

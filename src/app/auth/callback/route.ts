@@ -48,5 +48,12 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/login?error=exchange_failed`);
   }
 
-  return NextResponse.redirect(`${origin}${next}`);
+  const redirectResponse = NextResponse.redirect(`${origin}${next}`);
+  redirectResponse.cookies.set('customer_token', '1', {
+    path: '/',
+    maxAge: 3600,
+    sameSite: 'strict',
+  });
+
+  return redirectResponse;
 }
