@@ -132,7 +132,7 @@ function OrderSummaryItem({ name, image, price, quantity }: OrderSummaryItemProp
   return (
     <div className="flex items-center gap-3 py-3 border-b border-stone-800 last:border-0">
       {/* Product image */}
-      <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-stone-800">
+      <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-stone-800">
         <Image
           src={image}
           alt={name}
@@ -150,7 +150,7 @@ function OrderSummaryItem({ name, image, price, quantity }: OrderSummaryItemProp
 
       {/* Line total */}
       <p
-        className="text-sm font-semibold text-stone-200 flex-shrink-0"
+        className="text-sm font-semibold text-stone-200 shrink-0"
         suppressHydrationWarning
       >
         {formatIDR(price * quantity)}
@@ -498,7 +498,7 @@ export default function CheckoutPage() {
                     focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500
                     disabled:opacity-50 disabled:cursor-not-allowed
                     transition-all duration-150
-                    aria-[invalid=true]:border-rose-500 aria-[invalid=true]:focus:ring-rose-500/30
+                    aria-invalid:border-rose-500 aria-invalid:focus:ring-rose-500/30
                   "
                 />
               </FormField>
@@ -532,7 +532,7 @@ export default function CheckoutPage() {
                       focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500
                       disabled:opacity-50 disabled:cursor-not-allowed
                       transition-all duration-150
-                      aria-[invalid=true]:border-rose-500 aria-[invalid=true]:focus:ring-rose-500/30
+                      aria-invalid:border-rose-500 aria-invalid:focus:ring-rose-500/30
                     "
                   />
                 </div>
@@ -566,7 +566,7 @@ export default function CheckoutPage() {
                     focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500
                     disabled:opacity-50 disabled:cursor-not-allowed
                     transition-all duration-150
-                    aria-[invalid=true]:border-rose-500 aria-[invalid=true]:focus:ring-rose-500/30
+                    aria-invalid:border-rose-500 aria-invalid:focus:ring-rose-500/30
                   "
                 />
               </FormField>
@@ -601,7 +601,7 @@ export default function CheckoutPage() {
                   role="alert"
                   className="flex items-start gap-3 bg-rose-950/50 border border-rose-900 rounded-xl p-4"
                 >
-                  <AlertCircle size={18} className="text-rose-400 flex-shrink-0 mt-0.5" />
+                  <AlertCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-semibold text-rose-300">
                       Gagal mengirim pesanan
