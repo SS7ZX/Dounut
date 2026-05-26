@@ -4,15 +4,19 @@
 //
 // ALUR UX:
 //   1. User datang dari cart → lihat ringkasan order di kanan
-//   2. Isi form nama / WA / alamat di kiri
-//   3. Klik "Pesan Sekarang" → loading state → Supabase insert
-//   4. Sukses → Success state dengan order ID + link WA konfirmasi
-//   5. Error → Error state dengan pesan dan tombol retry
+//   2. Isi form nama / WA / alamat di kiri dengan validasi real-time
+//   3. Klik "Pesan Sekarang" → loading state → Supabase insert order + items
+//   4. Sukses → Redirect ke /confirm?orderId={id} untuk tampilkan konfirmasi
+//   5. Error → Tampilkan error message dengan opsi retry
 //
-// ANTI-HYDRATION STRATEGY:
-//   - `mounted` guard: komponen render null sampai useEffect jalan di client
-//   - Semua data dari Zustand dibaca setelah mount
-//   - suppressHydrationWarning pada semua price display
+// FEATURES:
+//   - Real-time validation on blur
+//   - Automatic cart clearing after successful order
+//   - WhatsApp number formatting (+62 prefix)
+//   - Tax calculation (11% PPN)
+//   - Order summary with product images
+//   - Mobile-optimized responsive layout
+//   - Hydration-safe with mounted guard
 //
 // MOBILE-FIRST:
 //   - Single column di mobile, dua kolom di md+
@@ -39,15 +43,13 @@ import {
   Phone,
   MapPin,
   MessageSquare,
-  CheckCircle2,
   AlertCircle,
   Loader2,
   ChevronRight,
   Package,
-  ExternalLink,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { OrderService }  from '@/lib/supabase';
+import { OrderService } from '@/lib/supabase';
 import {
   validateCheckoutForm,
   isFormValid,
@@ -159,104 +161,7 @@ function OrderSummaryItem({ name, image, price, quantity }: OrderSummaryItemProp
   );
 }
 
-// ---------------------------------------------------------------------------
-// SUB-COMPONENT: SuccessView
-// Ditampilkan setelah order berhasil dibuat
-// ---------------------------------------------------------------------------
-interface SuccessViewProps {
-  orderId:         string;
-  customerName:    string;
-  customerWa:      string;
-  grandTotal:      number;
-}
 
-function SuccessView({ orderId, customerName, customerWa, grandTotal }: SuccessViewProps) {
-  // Buat pesan WA yang pre-filled
-  const waMessage = encodeURIComponent(
-    `Halo Nostimo! 🍩\n\nSaya baru saja melakukan order.\n\n` +
-    `Nama: ${customerName}\n` +
-    `Order ID: ${orderId.slice(0, 8).toUpperCase()}\n` +
-    `Total: ${formatIDR(grandTotal)}\n\n` +
-    `Mohon konfirmasi pesanan saya. Terima kasih!`
-  );
-
-  const waLink = `https://wa.me/${NOSTIMO_WA}?text=${waMessage}`;
-
-  return (
-    <div className="min-h-screen bg-stone-950 flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md text-center">
-        {/* Animated check icon */}
-        <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-emerald-950 border border-emerald-800 flex items-center justify-center">
-            <CheckCircle2 size={40} className="text-emerald-400" />
-          </div>
-        </div>
-
-        <h1 className="text-3xl font-black text-stone-50 italic mb-2">
-          Order Masuk!
-        </h1>
-        <p className="text-stone-400 text-sm mb-8">
-          Terima kasih, <span className="text-stone-200 font-semibold">{customerName}</span>.
-          {' '}Pesananmu sudah kami terima.
-        </p>
-
-        {/* Order ID card */}
-        <div className="bg-stone-900 border border-stone-800 rounded-2xl p-5 mb-6 text-left">
-          <p className="text-xs text-stone-500 uppercase tracking-widest mb-1">Order ID</p>
-          <p className="text-base font-mono font-bold text-amber-400">
-            #{orderId.slice(0, 8).toUpperCase()}
-          </p>
-
-          <div className="mt-4 pt-4 border-t border-stone-800 flex justify-between items-center">
-            <p className="text-xs text-stone-500">Total Pembayaran</p>
-            <p className="text-base font-bold text-stone-200" suppressHydrationWarning>
-              {formatIDR(grandTotal)}
-            </p>
-          </div>
-        </div>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-col gap-3">
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="
-              flex items-center justify-center gap-2 w-full
-              bg-emerald-600 hover:bg-emerald-500
-              text-white font-bold py-4 rounded-xl
-              transition-colors duration-200
-              text-sm
-            "
-          >
-            <Phone size={16} />
-            Konfirmasi via WhatsApp
-            <ExternalLink size={14} className="opacity-70" />
-          </a>
-
-          <Link
-            href="/"
-            className="
-              flex items-center justify-center gap-2 w-full
-              bg-stone-900 hover:bg-stone-800
-              border border-stone-700
-              text-stone-300 font-semibold py-4 rounded-xl
-              transition-colors duration-200
-              text-sm
-            "
-          >
-            <Package size={16} />
-            Kembali ke Menu
-          </Link>
-        </div>
-
-        <p className="text-xs text-stone-600 mt-6">
-          Simpan order ID di atas untuk referensi jika ada pertanyaan.
-        </p>
-      </div>
-    </div>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // SUB-COMPONENT: EmptyCartRedirect
@@ -338,6 +243,8 @@ export default function CheckoutPage() {
     }
   }, [form, touched]);
 
+  const router = useRouter();
+
   // ---- Submit handler ----
   const handleSubmit = useCallback(async () => {
     // Tandai semua field sebagai touched untuk show semua error
@@ -377,10 +284,10 @@ export default function CheckoutPage() {
       return;
     }
 
-    // Sukses: clear cart, simpan order ID
+    // Sukses: clear cart dan redirect ke confirm page
     clearCart();
-    setCheckout({ step: 'success', orderId: data.id, errorMsg: null });
-  }, [form, cart, subtotal, tax_amount, grand_total, clearCart]);
+    router.push(`/confirm?orderId=${data.id}`);
+  }, [form, cart, subtotal, tax_amount, grand_total, clearCart, router]);
 
   // ---- Render guards ----
 
@@ -396,18 +303,6 @@ export default function CheckoutPage() {
   // Cart kosong
   if (cart.length === 0 && checkout.step === 'form') {
     return <EmptyCartRedirect />;
-  }
-
-  // Success state
-  if (checkout.step === 'success' && checkout.orderId) {
-    return (
-      <SuccessView
-        orderId={checkout.orderId}
-        customerName={form.name}
-        customerWa={form.whatsapp}
-        grandTotal={grand_total}
-      />
-    );
   }
 
   const isSubmitting = checkout.step === 'submitting';
@@ -602,13 +497,20 @@ export default function CheckoutPage() {
                   className="flex items-start gap-3 bg-rose-950/50 border border-rose-900 rounded-xl p-4"
                 >
                   <AlertCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
-                  <div>
+                  <div className="flex-1">
                     <p className="text-sm font-semibold text-rose-300">
                       Gagal mengirim pesanan
                     </p>
-                    <p className="text-xs text-rose-400/80 mt-0.5">
+                    <p className="text-xs text-rose-400/80 mt-0.5 mb-3">
                       {checkout.errorMsg}
                     </p>
+                    <button
+                      type="button"
+                      onClick={() => setCheckout({ step: 'form', orderId: null, errorMsg: null })}
+                      className="text-xs font-semibold text-rose-300 hover:text-rose-200 underline"
+                    >
+                      Coba Lagi
+                    </button>
                   </div>
                 </div>
               )}
